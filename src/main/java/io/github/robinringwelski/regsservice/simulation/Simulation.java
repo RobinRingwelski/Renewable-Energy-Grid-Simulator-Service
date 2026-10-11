@@ -1,6 +1,7 @@
 package io.github.robinringwelski.regsservice.simulation;
 
 import io.github.robinringwelski.regsservice.domain.*;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * time with {@link #step}, and produces snapshots of the current state.
  * This is the single entry point the API layer will talk to.
  */
+@Component
 public class Simulation {
     private final Environment environment = new Environment();
     private final List<Node> nodes = new ArrayList<>();
@@ -20,12 +22,17 @@ public class Simulation {
         nodes.add(new BatteryNode("bat-1", "Storage 1", 1000, 2000, 60, 0.8, 0.2));
     }
 
-    public void step(double dtSeconds) {
+    public synchronized void step(double dtSeconds) {
         environment.advance(dtSeconds);
         for (Node n : nodes) n.tick(environment, dtSeconds);
     }
 
-    public List<NodeSnapshot> snapshots() {
-        return nodes.stream().map(Node::snapshot).toList();
+    public synchronized SimulationSnapshot snapshot() {
+        return new SimulationSnapshot(environment.getTimeSeconds(),
+                nodes.stream().map(Node::snapshot).toList());
+    }
+
+    public synchronized List<NodeInfo> layout() {
+        return nodes.stream().map(Node::info).toList();
     }
 }

@@ -50,6 +50,11 @@ public abstract sealed class Node permits SolarNode, WindNode, BatteryNode {
     public void stop(StopSource source) { this.stopSource = source; }
     public void start() { this.stopSource = StopSource.NONE; }
 
+    // Node info for frontend.
+    public NodeInfo info() {
+        return new NodeInfo(id, name, type(), ratedPowerKw, x, y);
+    }
+
     public abstract AssetType type();
     public abstract void tick(Environment env, double dtSeconds);
     public abstract NodeSnapshot snapshot();
