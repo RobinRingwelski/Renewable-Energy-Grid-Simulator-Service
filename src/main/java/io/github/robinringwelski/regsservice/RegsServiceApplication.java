@@ -3,6 +3,7 @@ package io.github.robinringwelski.regsservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/** Entry point of the REGS (Renewable Energy Grid Simulator) Spring Boot service. */
 @SpringBootApplication
 public class RegsServiceApplication {
 
